@@ -1,0 +1,141 @@
+---
+title: "Version Control With Git"
+author: "36-350 -- Statistical Computing"
+date: "Week 8 -- Spring 2020"
+output: 
+  slidy_presentation: 
+    font_adjustment: -1
+---
+
+```{r,echo=FALSE}
+set.seed(101)
+```
+
+Why Version Control?
+===
+
+"The person who knows the most about your code is you-six-months-ago, and you-six-months-ago are not replying to your emailed questions." -Anon.
+
+The features of version control:
+
+- It allows you to keep a complete record of changes, allowing you to, e.g., revert back to a previous version of your code if things have gone awry.
+
+- As part of that complete record, it allows you to store messages for every change, so that you can recall the rationale for a change later.
+
+- With, e.g., `Git`, you can back your code up in the cloud (e.g., on `GitHub`), allowing for easy distribution.
+
+Note that here I am talking about "code," but version control can also be useful when you are, for instance, writing reports (like your DAs in 36-401).
+
+Git Basics
+===
+
+`Git` allows you to take "snapshots" of the contents of a folder on your machine as you make changes to them. (This is your local repository, or "repo".) Fix a bug? Take a snapshot. Add functionality? Take a snapshot. These snapshots are dubbed *commits*. Snapshot details are stored in the subfolder .git.
+
+Every time you commit your changes, you write a message that clearly indicates the changes that you have made since your last commit.
+
+In `Git`, two or more people can make independent changes to the same code, or one person can have two or more different code versions being developed in parallel, via *branching*. (Technically a branch is a pointer to a particular commit...think of it as you point to a particular version of a code and "branch out" from there. The default branch is the *master*.) Development spawned by branching can later be *merged*.
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/git.png)</center>
+
+<small>From: *Pro Git* by Chacon & Straub (`git-scm.com/book/en/v2`)</small>
+
+Install GitHub
+===
+
+1) If you do not have a `GitHub` account, get one at `github.com`!
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/github.png){width=800px}</center>
+
+Install Git
+===
+
+2) If you do not have `Git` installed on your laptop, install it!
+
+- `https://git-scm.com/downloads`
+
+During setup, configure `Git` with your user name (**use your full name, not your Andrew ID**) and your user email (**which should be the same one you used to sign up for your `GitHub` account**).
+
+GitHub First...
+===
+
+In this class, we will follow the paradigm of "`GitHub` first". What this means is that when we create a repository, we will create it on `GitHub` first, then link a local repository to it from inside `RStudio`.
+
+In `GitHub`, do the following:
+
+- go to the top-level directory (i.e., `github.com/<your user name here>`)
+
+- click on "+" at top right, and select "New repository"
+
+- name the repository (e.g., "36-350")
+
+- provide a short description of the repository (don't leave completely blank!)
+
+- keep the repository public
+
+- click on "Initialize this repository with a README"...there is no need to "Add .gitignore" or "Add a license"
+
+- click on "Create Repository"
+
+...then RStudio
+===
+
+In `RStudio`, do the following:
+
+- click on `File > New Project...`
+
+- click on "Version Control", then on "Git"
+
+- provide the *full* address for the "Repository URL" (including the `https`, etc.; by default, this will provide the name of your local repository)
+
+- make sure "Create project as subdirectory of:" points to where you want to point it (I'd suggest have a `Git` folder, with your project(s) being subdirectories of that folder)
+
+- click on "Create Project"
+
+At this point, you should find that your `Files` pane is listing the files in your local repository, including one ending in `.Rproj` and the `README.md` file that was created on `GitHub`.
+
+Updating Your Repository
+===
+
+To, e.g., add a new file to your local repository, do the following:
+
+- open the new file as you always would (as an `R Script`, an `R Markdown` file, etc.)
+
+- fill the file with "stuff"
+
+- save the file...at this point, the file name should show up in the `Git` pane next to an "M" symbol (for modified)
+
+- continue to modify the file, or...stage the file for a commit (think of it as: pose it for its snapshot) by clicking on "Staged" in the Git pane
+
+- click on "Commit" in the `Git` pane
+
+- in the new window that opens, add a "Commit message", then click on the "Commit" button
+
+- click on "Push" to push your changes from your local repo to your `GitHub` repo
+
+Done.
+
+Branches
+===
+
+When you first push code to your `GitHub` repo, it will exist in the so-called `master` branch. You can view this as the "deployable branch," i.e., the branch that contains the code you wish to release to the world.
+
+If you are, e.g., working alone, then a common workflow is to improve your code in your local `Git` repo, stage, commit, and push to the `master` branch. In other words, you simply overwrite what is on the `master` branch as you improve your code.
+
+However, there is another workflow, one that is particularly relevant if you work in teams, and that is to create non-`master` branches where you can take your (not-yet-ready-to-be-deployed) code in different directions. If you feel that the changes on a branch need to be propagated to the `master` branch code, you merge your changes into the `master` branch code via a "pull request."
+
+Here is a simple series of steps for creating a new branch via `GitHub` and `RStudio`'s `Git` pane:
+
+1. On `GitHub`: in your repo, you will see a box above the file list that says "Branch: master" with a downward-pointing triangle. Click on this, and in the window that appears, provide a branch name, such as `new_branch`. Hit return. `GitHub` will take you to your new branch. All the code in this branch is the same.
+2. In `RStudio`: open your project, and go to the `Git` pane, where you will see the words "New Branch" in the upper-right-hand corner. Click on this, and in the pop-up window that appears, type a branch name. **This should be the same name that you just used in the GitHub repo itself.** 
+3. In the new branch, you can edit code, and the changes *will only be seen in the new branch itself*. You can stage, commit, and push as before, but your changes will only go to the new branch on `GitHub`.
+
+Sources of Information
+===
+
+- [Happy Git With R](http://happygitwithr.com) by Jenny Bryan and a squad of TAs
+
+- [An Introduction to Git and How to Use It with RStudio](http://r-bio.github.io/intro-git-rstudio/)
+
+- [Pro Git](https://git-scm.com/book/en/v2) by Scott Chacon &amp; Ben Straub
+
+

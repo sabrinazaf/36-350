@@ -1,0 +1,7 @@
+"0","f = function(x) { "
+"0","  log(x)"
+"0","  print(""hello"")"
+"0","}"
+"0","f('a')"
+"2","Error in log(x) : non-numeric argument to mathematical function
+"

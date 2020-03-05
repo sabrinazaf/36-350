@@ -1,0 +1,104 @@
+---
+title: 'Homework 6: question 4'
+output:
+  html_document # change this to pdf_document to make a pdf
+---
+
+```{r, echo=FALSE, warning=FALSE}
+# Style edits
+knitr::opts_chunk$set(message = FALSE) # include this if you don't want markdown to knit messages
+knitr::opts_chunk$set(warning = FALSE) # include this if you don't want markdown to knit warnings
+knitr::opts_chunk$set(echo = TRUE) # set echo=FALSE to hide code from output (for the exercise, you need to show your code)
+
+# Include libraries - install them first in case you have not done so before
+library(pander) 
+library(ggplot2)
+```
+
+
+In case you have little experience with R, the functions below will help you to do question 4 of the homework and layout your answers nicely. Once you have read and understood the code, you can use the functions described here to create your own Rmd file containing both your code and your results. 
+
+## For-loops
+
+When you need to run a part of your R code multiple times, you can use a for-loop. For example, if you want to compute the average of 50 square numbers $i^2$: $$(1^2 + 2^2 + 3^2 + \ldots + 49^2 + 50^2) / 50,$$ you can do:
+
+```{r}
+squares <- rep(0, 50)
+for (i in 1:50) {
+  squares[i] <- i^2
+}
+mean(squares)  
+```
+
+The mean of the first 50 squares is `r mean(squares)`. Note that a for-loop was not really necessary here. We could have computed this number by calling `mean((1:50)^2)` instead.
+
+## Making tables
+
+You have several options for summarizing your results in a table. We discuss three options here. For example, to show the mean of the first, middle and last four square numbers $i^2$, we could do:
+
+Part    | Data entries      | Mean
+------------- | ------------- | ------------- 
+First | `r squares[1:4]` | `r mean(squares[1:4])`
+Middle | `r squares[23:27]` | `r mean(squares[23:27])`
+Last | `r squares[47:50]` | `r mean(squares[47:50])`
+
+When the temperature during the first four days of Spring Break will be uniformly distributed between 70 and 80, potential data we could get is:
+
+```{r} 
+set.seed(5)
+
+tempdata <- data.frame(Day = paste0("day ", 1:4),
+           Temperature = round(runif(4, 70, 80), 1))
+knitr::kable(tempdata)
+
+pander(tempdata)
+```
+
+Note that we have set a seed for the random number generator, to make sure that we get the same results each time we compile the Rmd file. Usually, we would include one call of `set.seed` at the beginning of an Rmd file.
+
+## Tips
+
+1. Knit the file to a pdf by clicking the Knit button at the top of the script editor window in RStudio.
+2. While you are working on question 4, you may want to switch to knitting to html, because it can be faster than knitting to pdf.
+2. Complete the questions in the Rmd file, using a new heading for each exercise. 
+3. It should be clear what your are computing where. Try to write your results up as a story, so not just code/results, but also some explanation in between.
+3. Knit your file often to check the formatting and output, and to be sure there are no errors.
+
+Question 4d: 
+```{r}
+set.seed(500)
+y<-runif(20,0,27)
+x=rep(NA, 10)
+s=rep(NA, 10)
+d=rep(NA,10)
+for (i in 1:10){
+  x[i]=(max(y))
+  d[i]=(mean(y))
+  s[i]=(20/21)*(mean(y))
+}
+
+```
+Question 4e:
+```{r}
+set.seed(500)
+y<-runif(100,0,27)
+k=rep(NA, 10)
+s=rep(NA,10)
+d=rep(NA,10)
+for (i in 10){
+  k[i]=max(y)
+  s[i]=mean(y)
+  d[i]=((100/101)*mean(y)
+}
+
+```
+
+Question 4f: 
+```{r}
+set.seed(101)
+sample.s=c(16,12,19, 25, 14, 31,26, 23, 38, 29, 15, 32,19, 34, 27)
+punif(20,0,max(sample.s))
+1-(punif(30,0,max(sample.s)))
+qunif(0.5, 0, max(sample.s))
+
+```

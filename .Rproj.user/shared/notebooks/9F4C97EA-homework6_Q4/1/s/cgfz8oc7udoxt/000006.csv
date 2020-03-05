@@ -1,0 +1,5 @@
+"0","set.seed(5)"
+"0",""
+"0","tempdata <- data.frame(Day = paste0(""day "", 1:4),"
+"0","           Temperature = round(runif(4, 70, 80), 1))"
+"0","knitr::kable(tempdata)"

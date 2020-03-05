@@ -1,0 +1,7 @@
+"0","if ( typeof(x) != ""numeric"") warning(""x should be numeric."") # Warning: communicated via warning()"
+"2","Warning:"
+"2"," x should be numeric.
+"
+"0","message(""Welcome to the first code chunk of Notes_8B!"")     # Message: communicated via message()"
+"2","Welcome to the first code chunk of Notes_8B!
+"

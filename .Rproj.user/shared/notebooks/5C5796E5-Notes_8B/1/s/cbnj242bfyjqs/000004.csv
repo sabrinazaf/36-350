@@ -1,0 +1,4 @@
+"0","x = ""a"""
+"0","if ( typeof(x) != ""numeric"") stop(""x must be numeric."")      # Error: communicated via stop()"
+"2","Error: x must be numeric.
+"

@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1583255510879.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "611A146F",
+    "lastKnownWriteTime" : 1583246463,
+    "last_content_update" : 1583274170769,
+    "path" : "~/Downloads/Notes_8C.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "86,0",
+        "scrollLine" : "52"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

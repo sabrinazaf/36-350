@@ -1,0 +1,130 @@
+---
+title: "Unit Testing"
+author: "36-350 -- Statistical Computing"
+date: "Week 8 -- Spring 2020"
+output: 
+  slidy_presentation: 
+    font_adjustment: -1
+---
+
+```{r,echo=FALSE}
+set.seed(101)
+```
+
+Motivation
+===
+
+Bug fixing is a part of life. Every programmer's life.
+
+It would seem obvious that when fixing bugs you would want to set up a system of checks that would help to ensure that the bugs do not come back, or that other bugs are not introduced when updating code. But what is less obvious is how to do that.
+
+The answer is *unit testing*, i.e., the development and deployment of a suite of tests that your code needs to (or, at least, *should*) pass at every step of development.
+
+For instance, the developers of the `StatsBase` package for `Julia` do unit testing and communicate the results publicly in the `README.md` file on their `GitHub` repo:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/julia.png)</center>
+
+Unit Testing: General Concepts
+===
+
+We can define a unit to be a small, well-defined piece of code. (Like an `R` function.)
+
+A test is some code which runs the unit with some inputs and checks that its answer matches the answer you'd expect.
+
+In the context of `Git`, unit tests should be run before every commit. (So they should be made to be fast.)
+
+Benefits:
+
+- You catch problems early.
+
+- You can refactor code (i.e., rewrite it to improve it) with some assurance that you'll know if you accidentally broke something during the rewriting process.
+
+- It provides a natural documentation of what your code does.
+
+The Tradeoff:
+
+Unit testing has the cost that you need to spend time writing tests, but the benefit of markedly reducing the amount of time spent bug fixing later.
+
+Unit Testing in R: testthat()
+===
+
+To illustrate unit testing in `R`, we will utilize the `testthat` package. (You get one guess as to 
+[who](https://journal.r-project.org/archive/2011-1/RJournal_2011-1_Wickham.pdf) developed it. No, not me.)
+```{r}
+# A part of a code base. Think of a situation where this is written off-the-cuff, without much thought.
+char2int = function(character) { which(letters==character) }
+```
+
+You told someone else on your development team that you wrote a function that returns an integer for each letter, e.g., "a" returns 1. That person then used `test_that()` to determine whether your function can be "broken."
+```{r,error=TRUE}
+if ( require("testthat") == FALSE ) {
+  install.packages("testthat",repos="https://cloud.r-project.org")
+  library(testthat)
+}
+test_that(desc = "Test for string of length greater than 1",expect_error(char2int("aa")))
+test_that(desc = "Test for improper input (numeric)",       expect_error(char2int(1)))
+test_that(desc = "Test for expected output length (1)",     expect_length(char2int("a"),1))
+test_that(desc = "Test that output is integer",             expect_type(char2int("a"),"integer"))
+```
+The answer: yes, your function can be broken.
+
+Unit Testing in R: testthat()
+===
+
+OK, so let's correct the issues that unit testing raised:
+```{r,error=TRUE}
+char2int = function(character) 
+{ 
+  if ( typeof(character) != "character" ) stop("The input must be a character.")
+  if ( nchar(character) > 1 ) stop("The input character must be of length 1.")
+  which(letters==character)
+}
+test_that(desc = "Test for string of length greater than 1",expect_error(char2int("aa")))
+test_that(desc = "Test for improper input (numeric)",       expect_error(char2int(1)))
+test_that(desc = "Test for expected output length (1)",     expect_length(char2int("a"),1))
+test_that(desc = "Test that output is integer",             expect_type(char2int("a"),"integer"))
+```
+Silence is golden.
+
+But...there *are* bugs that are subsequently discovered:
+
+```{r,error=TRUE}
+char2int("A")
+char2int(c("A","B","C"))
+```
+
+Unit Testing in R: testthat()
+===
+
+Response: fix code, add tests.
+```{r,error=TRUE}
+char2int = function(character) 
+{ 
+  if ( typeof(character) != "character" ) stop("The input must be a character.")
+  if ( length(character) != 1 ) stop("The input must be a character vector of length 1.")
+  if ( nchar(character) > 1 ) stop("The input character must be of length 1.")
+  which(letters==tolower(character))
+}
+test_that(desc = "Test for string of length greater than 1",     expect_error(char2int("aa")))
+test_that(desc = "Test for improper input (numeric)",            expect_error(char2int(1)))
+test_that(desc = "Test for expected output length (1)",          expect_length(char2int("a"),1))
+test_that(desc = "Test that output is integer",                  expect_type(char2int("a"),"integer"))
+test_that(desc = "Test that upper-case letters work",            expect_equal(char2int("A"),1))
+test_that(desc = "Test that the length of the input vector is 1",expect_error(char2int(letters)))
+```
+And again: silence is golden. But is the code perfect? Probably not. That's why we have version control.
+
+Unit Testing in R: testthat()
+===
+
+There are 27 different `expect_<something>()` functions in the current version of `testthat`. Some not mentioned above include:
+
+- `expect_null()`: use this when you have your code return `NULL` rather than stop when, e.g., a bad input is detected
+
+- `expect_silent()`: use this when you expect no errors, warnings, or messages
+
+- `expect_output()`: use this when you want to ensure that output is not returned invisibly or is not `NULL`
+
+See the documentation for `testthat` (specifically by bringing up the `Packages` pane and clicking on `testthat`) to see the full list of functions you can apply in unit tests.
+
+Note that as your code development moves beyond `R Markdown` to `R` scripts (that might comprise, e.g., your own `R` [package](http://r-pkgs.had.co.nz/)), you will probably want to have a dedicated test directory. The function `test_dir()` allows you to then run all the tests in that directory (as you should prior to, e.g., committing your changes in your `Git` repo).

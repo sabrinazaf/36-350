@@ -1,0 +1,131 @@
+---
+title: "Debugging and Condition Handling"
+author: "36-350 -- Statistical Computing"
+date: "Week 8 -- Spring 2020"
+output: 
+  slidy_presentation: 
+    font_adjustment: -1
+---
+
+```{r,echo=FALSE}
+set.seed(101)
+```
+
+R: Stuff Happens
+===
+
+There are three so-called *conditions* in `R`: errors, warnings, and messages. (Note that to get the code chunk below to run, I added the option `error=TRUE` at the beginning. Keep this in mind for situations where your .Rmd file won't knit.)
+```{r,error=TRUE}
+x = "a"
+if ( typeof(x) != "numeric") stop("x must be numeric.")      # Error: communicated via stop()
+if ( typeof(x) != "numeric") warning("x should be numeric.") # Warning: communicated via warning()
+message("Welcome to the first code chunk of Notes_8B!")     # Message: communicated via message()
+```
+
+This is not necessarily good coding practice, but if you want to suppress warnings and messages...
+```{r}
+suppressWarnings(warning("This is your final warning!"))           # ...but it isn't, probably
+suppressMessages(message("You don't want to miss this message!"))  # ...but you will
+```
+
+Debugging: General Philosophies (Borrowed from Hadley Wickham, As Usual)
+===
+
+- Realize you have a bug. (This is a call for [unit testing](http://r-pkgs.had.co.nz/tests.html), which we'll cover next.)
+
+- Make it repeatable. (There's nothing like a bug that disappears because you forgot the steps you took prior to observing it, or because you didn't use `set.seed()` before sampling numbers, or...)
+
+- Figure out where it is. (In `RStudio`, this may involve highlighting smaller and smaller bits of code chunks and running those bits, to see where things are not as they should be. More on this below.)
+
+- Fix it and test it. (Meaning: add a unit test to ensure that the bug is squished and stays gone.)
+
+Debugging: R Markdown & Browser()
+===
+
+`R Markdown` does not currently support the concept of a breakpoint, where you click to the left of the line number and a red dot appears:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/breakpoint.png)</center>
+
+What you *can* do is suspend the execution of a code chunk via use of the `browser()` function:
+```{r}
+x = 5
+#browser() # uncomment in real-life usage...execution stops here and a "Browse" prompt appears in the console
+x = -abs(x)
+log(x)     # only yields a warning if a negative number is input
+```
+
+Debugging: R Markdown & Browser()
+===
+
+An example of using `browser()`:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/browser.png)</center>
+
+In the browser, you can check the values of variables and move forward through your code. See `?browser` for a list of commands that you can issue at the prompt. Common ones are
+
+- `c` or `cont`: exit the browser and continue execution at the next statement
+
+- `n`: evaluate the next statement, stepping over function calls
+
+- `s`: evaluate the next statement, stepping into function calls
+
+Debugging: R Markdown & traceback()
+===
+
+The `traceback()` function allows one to determine at what level of nested function calls an error occurs:
+
+<center>![](http://www.stat.cmu.edu/~pfreeman/traceback.png){width=800px}</center>
+
+(Note that while `traceback()` offers potentially useful information when running a code chunk, that information is not preserved during knitting. That's why I have a screenshot here, rather than a code chunk within this knitted slide.)
+
+Condition Handling: try()
+===
+
+The `try()` function allows you to ignore errors:
+```{r}
+f = function(x) { try(log(x)) } 
+f(10)
+f("x")
+f = function(x) { 
+  try(
+    {
+      x = -abs(x)
+      log(x)
+    },silent=TRUE) # Not necessarily a good coding practice! (And only suppresses errors.)
+}
+f(10)
+f("x")
+```
+
+Condition Handling: tryCatch()
+===
+
+The `tryCatch()` function allows you to customize your responses to conditions. The usual structure is something like this:
+
+<tt>
+tryCatch({<br>
+&nbsp;&nbsp;&lt;code that may fail&gt;<br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;error = function(c) { &lt; deal with error here &gt; },<br>
+&nbsp;&nbsp;warning = function(c) { &lt; deal with warning here &gt; },<br>
+&nbsp;&nbsp;message = function(c) { &lt; issue message here &gt; },<br>
+&nbsp;&nbsp;finally = { &lt; stuff to do regardless if there is an error &gt; }<br>
+})
+</tt>
+
+You need not specify every argument to `tryCatch()`. For instance, it is a relatively rare that your code will yield a message when run, so often you need not worry about what to do if a message is output.
+
+Condition Handling: tryCatch()
+===
+
+```{r}
+f = function(x) {
+  tryCatch(log(x),
+    error = function(c) "Error: input is not a number.",
+    warning = function(c) "Warning: input is a negative number."
+  )
+}
+f(10)  # bueno
+f(-10) # malo
+f("x") # muy malo
+```
